@@ -13,6 +13,7 @@
   --muted-foreground: #6b7280;
   --primary: #3b82f6;
   --primary-foreground: #ffffff;
+  --border: #e5e7eb; /* gray-200 */
 }
 
 .dark {
@@ -23,6 +24,7 @@
   --muted-foreground: #9ca3af;
   --primary: #2563eb;
   --primary-foreground: #ffffff;
+  --border: #374151; /* gray-700 */
 }
 
 body {
