@@ -1,11 +1,10 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
 import { DateTime } from "luxon";
 import { cities } from "@/cities";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiSearch } from "react-icons/fi";
+import { FiSearch, FiChevronDown } from "react-icons/fi";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 // Define the structure of a city object
@@ -19,6 +18,7 @@ interface City {
 export default function Home() {
   const [time, setTime] = useState(DateTime.now());
   const [searchTerm, setSearchTerm] = useState("");
+  const [expandedCity, setExpandedCity] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -34,6 +34,14 @@ export default function Home() {
       city.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
       city.country.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const toggleCity = (timezone: string) => {
+    if (expandedCity === timezone) {
+      setExpandedCity(null);
+    } else {
+      setExpandedCity(timezone);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -67,49 +75,53 @@ export default function Home() {
           </div>
 
           <div className="lg:col-span-2">
-            <AnimatePresence>
-              <motion.div
-                layout
-                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"
-              >
-                {filteredCities.map((city: City) => {
-                  const localTime = time.setZone(city.timezone);
-                  const offset = Math.round(localTime.offset / 60 - klTime.offset / 60);
+            <div className="space-y-4">
+              {filteredCities.map((city: City) => {
+                const localTime = time.setZone(city.timezone);
+                const offset = Math.round(localTime.offset / 60 - klTime.offset / 60);
+                const isExpanded = expandedCity === city.timezone;
 
-                  return (
-                    <motion.div
-                      key={city.timezone}
-                      layout
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                      className="bg-card p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300"
+                return (
+                  <div key={city.timezone} className="bg-card rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <button
+                      onClick={() => toggleCity(city.timezone)}
+                      className="w-full flex justify-between items-center p-4"
                     >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h2 className="text-lg font-bold">{city.city}</h2>
-                          <p className="text-sm text-muted-foreground">{city.country}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xs font-medium text-muted-foreground">
-                            {offset === 0 ? "KUL" : `KUL ${offset > 0 ? "+" : ""}${offset}h`}
-                          </p>
-                        </div>
+                      <div>
+                        <h2 className="text-lg font-bold">{city.city}</h2>
+                        <p className="text-sm text-muted-foreground">{city.country}</p>
                       </div>
-                      <div className="mt-4 text-center">
-                        <p className="text-4xl sm:text-5xl font-mono font-bold">
-                          {localTime.toFormat("HH:mm")}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {localTime.toFormat("ccc, dd LLL yyyy")}
-                        </p>
+                      <div className="flex items-center">
+                        <p className="text-2xl font-mono font-bold mr-4">{localTime.toFormat("HH:mm")}</p>
+                        <FiChevronDown
+                          className={`transform transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+                        />
                       </div>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            </AnimatePresence>
+                    </button>
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                            <div className="flex justify-between items-center">
+                              <p className="text-sm text-muted-foreground">{localTime.toFormat("cccc, dd LLLL yyyy")}</p>
+                              <p className="text-xs font-medium text-muted-foreground">
+                                {offset === 0 ? "KUL" : `KUL ${offset > 0 ? "+" : ""}${offset}h`}
+                              </p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

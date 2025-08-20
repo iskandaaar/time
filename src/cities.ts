@@ -1,4 +1,3 @@
-
 // You can easily edit this list to add, remove, or change cities.
 // Just make sure to keep the structure of the objects consistent.
 export const cities = [
@@ -37,7 +36,6 @@ export const cities = [
 
   // APAC - Oceania
   { city: "Sydney", country: "Australia", timezone: "Australia/Sydney" },
-  { city: "Canberra", country: "Australia", timezone: "Australia/Sydney" },
   { city: "Wellington", country: "New Zealand", timezone: "Pacific/Auckland" },
   { city: "Port Moresby", country: "Papua New Guinea", timezone: "Pacific/Port_Moresby" },
   { city: "Suva", country: "Fiji", timezone: "Pacific/Fiji" },
@@ -53,7 +51,6 @@ export const cities = [
 
   // Middle East
   { city: "Dubai", country: "United Arab Emirates", timezone: "Asia/Dubai" },
-  { city: "Abu Dhabi", country: "United Arab Emirates", timezone: "Asia/Dubai" },
   { city: "Riyadh", country: "Saudi Arabia", timezone: "Asia/Riyadh" },
   { city: "Doha", country: "Qatar", timezone: "Asia/Qatar" },
   { city: "Muscat", country: "Oman", timezone: "Asia/Muscat" },
@@ -68,7 +65,5 @@ export const cities = [
   { city: "Khartoum", country: "Sudan", timezone: "Africa/Khartoum" },
   { city: "Sana'a", country: "Yemen", timezone: "Asia/Aden" },
   { city: "Jerusalem", country: "Israel", timezone: "Asia/Jerusalem" },
-  { city: "Ramallah", country: "Palestine", timezone: "Asia/Hebron" },
-  { city: "Ankara", country: "Türkiye", timezone: "Europe/Istanbul" },
-  { city: "Istanbul", country: "Türkiye", timezone: "Europe/Istanbul" }
+  { city: "Ramallah", country: "Palestine", timezone: "Asia/Hebron" }
 ];
