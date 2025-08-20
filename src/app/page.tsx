@@ -37,7 +37,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background text-foreground p-4 sm:p-6 md:p-8 flex flex-col items-center">
-      <div className="w-full max-w-4xl bg-card border border-border rounded-lg shadow-lg overflow-hidden">
+      <div className="w-full max-w-4xl bg-card border-2 border-border rounded-lg shadow-xl overflow-hidden">
         <header className="flex flex-col sm:flex-row justify-between items-center p-6 border-b border-border">
           <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-0">World Time Buddy</h1>
           <div className="flex items-center gap-4 w-full sm:w-auto">
@@ -73,13 +73,11 @@ export default function Home() {
             const gmtOffset = `GMT${localTime.toFormat("Z")}`;
 
             return (
-              <div key={city.timezone} className="flex justify-between items-center p-4">
-                <div>
-                  <h3 className="font-bold text-lg">{city.city}, {city.country}</h3>
-                  <p className="text-sm text-muted-foreground">{gmtOffset}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-2xl font-mono font-bold">{localTime.toFormat("HH:mm")}</p>
+              <div key={city.timezone} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+                <div className="flex-grow">
+                  <p className="text-lg font-bold">
+                    {city.city}, {city.country} - {localTime.toFormat("HH:mm")} ({gmtOffset})
+                  </p>
                 </div>
               </div>
             );
