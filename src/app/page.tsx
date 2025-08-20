@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DateTime } from "luxon";
 import { cities } from "@/cities";
-import { FiSearch } from "react-icons/fi";
+import { FiSearch, FiArrowUp, FiArrowDown } from "react-icons/fi";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 // Define the structure of a city object
@@ -13,10 +13,13 @@ interface City {
   timezone: string;
 }
 
+type SortOrder = 'asc' | 'desc' | null;
+
 // The main component for the World Clock page
 export default function Home() {
   const [time, setTime] = useState(DateTime.now());
   const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState<SortOrder>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -27,13 +30,32 @@ export default function Home() {
 
   const klTime = time.setZone("Asia/Kuala_Lumpur");
 
-  const filteredCities = cities
-    .filter((city) => city.timezone !== "Asia/Kuala_Lumpur")
-    .filter(
-      (city) =>
-        city.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        city.country.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+  const sortedAndFilteredCities = useMemo(() => {
+    let currentCities = cities
+      .filter((city) => city.timezone !== "Asia/Kuala_Lumpur")
+      .filter(
+        (city) =>
+          city.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          city.country.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+    if (sortOrder) {
+      currentCities = [...currentCities].sort((a, b) => {
+        const timeA = time.setZone(a.timezone).toMillis();
+        const timeB = time.setZone(b.timezone).toMillis();
+        return sortOrder === 'asc' ? timeA - timeB : timeB - timeA;
+      });
+    }
+    return currentCities;
+  }, [searchTerm, sortOrder, time]);
+
+  const toggleSortOrder = () => {
+    setSortOrder((prevOrder) => {
+      if (prevOrder === 'asc') return 'desc';
+      if (prevOrder === 'desc') return null;
+      return 'asc';
+    });
+  };
 
   return (
     <main className="min-h-screen bg-background text-foreground p-4 sm:p-6 md:p-8 flex flex-col items-center">
@@ -51,6 +73,15 @@ export default function Home() {
                 className="w-full bg-background border border-border focus:ring-2 focus:ring-primary focus:border-transparent rounded-lg py-2 pl-9 pr-3"
               />
             </div>
+            <button
+              onClick={toggleSortOrder}
+              className="p-2 rounded-lg bg-background border border-border hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+              title="Sort by time"
+            >
+              {sortOrder === 'asc' && <FiArrowUp className="text-primary" />}
+              {sortOrder === 'desc' && <FiArrowDown className="text-primary" />}
+              {sortOrder === null && <FiArrowUp className="text-muted-foreground" />}
+            </button>
             <ThemeSwitcher />
           </div>
         </header>
@@ -68,12 +99,12 @@ export default function Home() {
         </div>
 
         <div className="divide-y divide-border">
-          {filteredCities.map((city: City) => {
+          {sortedAndFilteredCities.map((city: City) => {
             const localTime = time.setZone(city.timezone);
             const gmtOffset = `GMT${localTime.toFormat("Z")}`;
 
             return (
-              <div key={city.timezone} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+              <div key={city.timezone} className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 px-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
                 <div className="flex-grow">
                   <p className="text-lg font-bold">
                     {city.city}, {city.country} - {localTime.toFormat("HH:mm")} ({gmtOffset})
