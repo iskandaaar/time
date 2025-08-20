@@ -43,7 +43,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="container mx-auto p-4 sm:p-6 md:p-8 max-w-2xl">
+      <div className="container mx-auto p-4 sm:p-6 md:p-8 max-w-md">
         <header className="flex justify-between items-center mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold">World Clock</h1>
           <div className="flex items-center gap-2">
@@ -64,8 +64,7 @@ export default function Home() {
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-xl font-bold">Kuala Lumpur</h2>
-              <p className="text-sm text-muted-foreground">Malaysia</p>
+              <h2 className="text-xl font-bold">Kuala Lumpur, Malaysia</h2>
             </div>
             <div className="text-right">
               <p className="text-4xl font-mono font-bold">{klTime.toFormat("HH:mm")}</p>
@@ -85,8 +84,7 @@ export default function Home() {
                   className="w-full flex justify-between items-center p-4 text-left"
                 >
                   <div>
-                    <h2 className="font-bold">{city.city}</h2>
-                    <p className="text-xs text-muted-foreground">{city.country}</p>
+                    <h2 className="font-bold">{city.city}, {city.country}</h2>
                   </div>
                   <div className="text-right">
                     <p className="text-xl font-mono font-bold">{localTime.toFormat("HH:mm")}</p>
